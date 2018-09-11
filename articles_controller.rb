@@ -10,10 +10,9 @@ class ArticlesController < ApplicationController
     @articles_count = @articles.count
 
     @articles = order_articles(
-      { order_by: :desc,
-        offset: articles_offset,
-        limit: articles_limit(20)
-      }
+      order_by: :desc,
+      offset: articles_offset,
+      limit: articles_limit(20)
     )
   end
 
@@ -23,10 +22,9 @@ class ArticlesController < ApplicationController
     @articles_count = @articles.count
 
     @articles = order_articles(
-      { order_by: :desc,
-        offset: articles_offset,
-        limit: articles_limit
-      }
+      order_by: :desc,
+      offset: articles_offset,
+      limit: articles_limit
     )
 
     render :index
