@@ -41,8 +41,7 @@ class ArticlesController < ApplicationController
     end
   end
 
-  def show
-  end
+  def show; end
 
   def update
     if @article.user_id == @current_user_id
