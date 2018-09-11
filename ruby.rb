@@ -53,7 +53,7 @@ class ArticlesController < ApplicationController
       @article.update_attributes(articleParams)
       render :show
     else
-      render json: { errors: { article: ['not owned by user'] } }, status: :forbidden
+      handle_forbidden_error
     end
   end
 
@@ -65,7 +65,7 @@ class ArticlesController < ApplicationController
 
       render json: {}
     else
-      render json: { errors: { article: ['not owned by user'] } }, status: :unprocessable_entity
+      handle_forbidden_error
     end
   end
 
@@ -85,5 +85,9 @@ class ArticlesController < ApplicationController
     return params[:offset] if params[:offset].present?
 
     offset
+  end
+
+  def handle_forbidden_error
+    render json: { errors: { article: ['not owned by user'] } }, status: :forbidden
   end
 end
