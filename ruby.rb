@@ -50,7 +50,7 @@ class ArticlesController < ApplicationController
     @article = Article.find_by_slug!(params[:slug])
 
     if @article.user_id == @current_user_id
-      @article.update_attributes(articleParams)
+      @article.update_attributes(article_params)
       render :show
     else
       handle_forbidden_error
