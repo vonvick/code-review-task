@@ -69,11 +69,11 @@ class ArticlesController < ApplicationController
     end
   end
 
+  private
+
   def article_params
     params.require(:article).permit(:title, :body, :description, tag_list: [])
   end
-
-  private
 
   def articles_limit(limit = nil)
     return params[:limit] if params[:limit].present?
@@ -88,6 +88,7 @@ class ArticlesController < ApplicationController
   end
 
   def handle_forbidden_error
-    render json: { errors: { article: ['not owned by user'] } }, status: :forbidden
+    render json: { errors: { article: ['not owned by user'] } },
+           status: :forbidden
   end
 end
