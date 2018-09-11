@@ -4,19 +4,16 @@ class ArticlesController < ApplicationController
   def index
     @articles = Article.all.includes(:user)
 
-    if params[:tag].present?
-      @articles = @articles.tagged_with(params[:tag])
-    elsif params[:author].present?
-      @articles = @articles.authored_by(params[:author])
-    elsif params[:favorited].present?
-      @articles = @articles.favorited_by(params[:favorited])
-    end
+    article_options
 
     @articles_count = @articles.count
 
-    @articles = @articles.order(created_at: :desc)
-                         .offset(articles_offset)
-                         .limit(articles_limit(20))
+    @articles = order_articles(
+      { order_by: :desc,
+        offset: articles_offset,
+        limit: articles_limit(20)
+      }
+    )
   end
 
   def feed
@@ -24,9 +21,12 @@ class ArticlesController < ApplicationController
 
     @articles_count = @articles.count
 
-    @articles = @articles.order(created_at: :desc)
-                         .offset(articles_offset)
-                         .limit(articles_limit)
+    @articles = order_articles(
+      { order_by: :desc,
+        offset: articles_offset,
+        limit: articles_limit
+      }
+    )
 
     render :index
   end
@@ -90,5 +90,21 @@ class ArticlesController < ApplicationController
   def handle_forbidden_error
     render json: { errors: { article: ["not owned by user"] } },
            status: :forbidden
+  end
+
+  def article_options
+    if params[:tag].present?
+      @articles.tagged_with(params[:tag])
+    elsif params[:author].present?
+      @articles.authored_by(params[:author])
+    elsif params[:favorited].present?
+      @articles.favorited_by(params[:favorited])
+    end
+  end
+
+  def order_articles(args)
+    @articles.order(created_at: args[:order_by])
+             .offset(args[:offset])
+             .limit(args[:limit])
   end
 end
