@@ -32,7 +32,7 @@ class ArticlesController < ApplicationController
   end
 
   def create
-    @article = Article.new(articleParams)
+    @article = Article.new(article_params)
     @article.user = current_user
 
     if @article.save
@@ -69,7 +69,7 @@ class ArticlesController < ApplicationController
     end
   end
 
-  def articleParams
+  def article_params
     params.require(:article).permit(:title, :body, :description, tag_list: [])
   end
 
