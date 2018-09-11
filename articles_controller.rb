@@ -37,7 +37,7 @@ class ArticlesController < ApplicationController
     if @article.save
       render :show
     else
-      render json: { errors: @article.errors }, status: => 422
+      render json: { errors: @article.errors }, status: :unprocessable_entity
     end
   end
 
