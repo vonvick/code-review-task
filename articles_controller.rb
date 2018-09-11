@@ -56,7 +56,7 @@ class ArticlesController < ApplicationController
     if @article.user_id == @current_user_id
       @article.destroy
 
-      render json: {}
+      render json: {}, status: :ok
     else
       handle_forbidden_error
     end
