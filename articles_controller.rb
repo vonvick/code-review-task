@@ -1,5 +1,6 @@
 class ArticlesController < ApplicationController
   before_action :authenticate_user!, except: [:index, :show]
+  before_action :find_article_by_slug, only: [:show, :update, :destroy]
 
   def index
     @articles = Article.all.includes(:user)
@@ -43,12 +44,9 @@ class ArticlesController < ApplicationController
   end
 
   def show
-    @article = Article.find_by_slug!(params[:slug])
   end
 
   def update
-    @article = Article.find_by_slug!(params[:slug])
-
     if @article.user_id == @current_user_id
       @article.update_attributes(article_params)
       render :show
@@ -58,8 +56,6 @@ class ArticlesController < ApplicationController
   end
 
   def destroy
-    @article = Article.find_by_slug!(params[:slug])
-
     if @article.user_id == @current_user_id
       @article.destroy
 
@@ -100,6 +96,10 @@ class ArticlesController < ApplicationController
     elsif params[:favorited].present?
       @articles.favorited_by(params[:favorited])
     end
+  end
+
+  def find_articles_by_slug
+    @article = Article.find_by_slug!(params[:slug])
   end
 
   def order_articles(args)
