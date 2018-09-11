@@ -13,28 +13,21 @@ class ArticlesController < ApplicationController
     end
 
     @articles_count = @articles.count
-    offset = 0
-    limit = 20
-    if params[:offset]
-      offset = params[:offset]
-    end
-    if params[:limit]
-      limit = params[:limit]
-    end
-    @articles = @articles.order(created_at: :desc).offset(offset).limit(limit)
+
+    @articles = @articles.order(created_at: :desc)
+                         .offset(articles_offset)
+                         .limit(articles_limit(20))
   end
 
   def feed
     @articles = Article.includes(:user).where(user: current_user.following_users)
 
     @articles_count = @articles.count
-    if params[:offset]
-      offset = params[:offset]
-    end
-    if params[:limit]
-      limit = params[:limit]
-    end
-    @articles = @articles.order(created_at: :desc).offset(offset).limit(limit)
+
+    @articles = @articles.order(created_at: :desc)
+                         .offset(articles_offset)
+                         .limit(articles_limit)
+
     render :index
   end
 
@@ -78,5 +71,19 @@ class ArticlesController < ApplicationController
 
   def articleParams
     params.require(:article).permit(:title, :body, :description, tag_list: [])
+  end
+
+  private
+
+  def articles_limit(limit = nil)
+    return params[:limit] if params[:limit].present?
+
+    limit
+  end
+
+  def articles_offset(offset = nil)
+    return params[:offset] if params[:offset].present?
+
+    offset
   end
 end
