@@ -88,7 +88,7 @@ class ArticlesController < ApplicationController
   end
 
   def handle_forbidden_error
-    render json: { errors: { article: ['not owned by user'] } },
+    render json: { errors: { article: ["not owned by user"] } },
            status: :forbidden
   end
 end
