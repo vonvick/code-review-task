@@ -21,3 +21,4 @@ Here are some of the things I did to refactor the code:
 - Created a `before_action` hook for handling fetching of article by its slug.
 - Made sure only required method are public and make all others private.
 - Made sure that the status returned for the methods are uniform i.e uses symbols rather than using a mix of symbol and numbers.
+- I also ensured that status codes were also sent when rendering to `json`.
