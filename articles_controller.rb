@@ -11,8 +11,8 @@ class ArticlesController < ApplicationController
 
     @articles = order_articles(
       order_by: :desc,
-      offset: articles_offset,
-      limit: articles_limit(20)
+      limit: articles_filter(params[:limit], 20),
+      offset: articles_filter(params[:offset])
     )
   end
 
@@ -23,8 +23,8 @@ class ArticlesController < ApplicationController
 
     @articles = order_articles(
       order_by: :desc,
-      offset: articles_offset,
-      limit: articles_limit
+      limit: articles_filter(params[:limit]),
+      offset: articles_filter(params[:offset])
     )
 
     render :index
@@ -68,31 +68,21 @@ class ArticlesController < ApplicationController
     params.require(:article).permit(:title, :body, :description, tag_list: [])
   end
 
-  def articles_limit(limit = nil)
-    return params[:limit] if params[:limit].present?
+  def articles_filter(filter, filter_value: nil)
+    return filter if filter.present?
 
-    limit
-  end
-
-  def articles_offset(offset = nil)
-    return params[:offset] if params[:offset].present?
-
-    offset
+    filter_value
   end
 
   def handle_forbidden_error
-    render json: { errors: { article: ["not owned by user"] } },
+    render json: { errors: { article: ['not owned by user'] } },
            status: :forbidden
   end
 
   def article_options
-    if params[:tag].present?
-      @articles.tagged_with(params[:tag])
-    elsif params[:author].present?
-      @articles.authored_by(params[:author])
-    elsif params[:favorited].present?
-      @articles.favorited_by(params[:favorited])
-    end
+    @articles.tagged_with(params[:tag]) if params[:tag].present?
+    @articles.authored_by(params[:author]) if params[:author].present?
+    @articles.favorited_by(params[:favorited]) if params[:favorited].present?
   end
 
   def find_articles_by_slug
